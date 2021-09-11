@@ -14,7 +14,6 @@ export default (sale: any, openSeaResponse: any): string => {
     const regions = openSeaResponse.traits.find(resource => resource.trait_type === 'Regions')
     const rivers = openSeaResponse.traits.find(resource => resource.trait_type === 'Rivers')
 
-    console.log(rivers)
 
     const colour = [
       {
@@ -113,8 +112,9 @@ export default (sale: any, openSeaResponse: any): string => {
     const traitDetail = (t) => {
       let html: string = ''
       for(let i = 0; t < t.length; i++) {
-        html += "<span class="+ getColour(t.value) + "px-4 py-1 rounded text-sm mb-1 mr-2>" + t.value +"</span>";
+        html.concat("<span class=px-4 py-1 rounded text-sm mb-1 mr-2>" + t.value +"</span>/n")
       }
+      console.log(html)
       return html
     }
 
@@ -127,9 +127,9 @@ export default (sale: any, openSeaResponse: any): string => {
             <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord! 👑</h1>
             <h4 class="text-4xl my-2">Sold for: ${price}</h4> 
             <div class="flex my-2 flex-wrap space-y-4 text-2xl">
-              <h4> Resources: ${ traits.value } </h4>
+              <h4> Resources:</h4>
               <div class="flex flex-wrap my-4">
-                ${traitDetail(traits)}
+                
               </div>
             </div>
             <div class="my-2 text-xl">       

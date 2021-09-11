@@ -27,6 +27,17 @@ const buildMessage = (sale: any) => (
   new Discord.MessageAttachment(sale, 'name.jpeg') 
 )
 
+const buildLinks = (sale: any) => (
+  new Discord.MessageEmbed()
+  .addFields(
+    { name: "Open sea link",
+      value: sale.asset.permalink
+    },
+    { name: "See on Bibliotheca",
+    value: `https://bibliotheca.com/realms/${sale.asset.token_id}`
+  })
+)
+
 async function main() {
   const channel = await discordSetup();
   const seconds = process.env.SECONDS ? parseInt(process.env.SECONDS) : 3_600;
@@ -63,7 +74,9 @@ async function main() {
       })
 
       const message = buildMessage(image);
-      return channel.send(message)
+      const links = buildLinks(sale);
+      channel.send(message)
+      return channel.send(links)
     })
   );   
 }

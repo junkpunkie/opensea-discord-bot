@@ -1,14 +1,153 @@
-export default (sale: any): string => {
+import { ethers } from "ethers";
+export default (sale: any, openSeaResponse: any): string => {
     const imageUrl = sale.asset.image_url
-  
-    const body: string = `<body>
-      <div class="overlay"></div>
+    const name = sale.asset.name
+    const id = sale.token_id
+    const buyer = sale?.winner_account?.address
+    const seller = sale?.seller?.address
+    const price = `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`
+
+    const traits = openSeaResponse.traits.filter(resource => resource.trait_type === 'Resource')
+
+    const cities = openSeaResponse.traits.filter(resource => resource.trait_type === 'Cities')
+    const harbours = openSeaResponse.traits.filter(resource => resource.trait_type === 'Harbors')
+    const regions = openSeaResponse.traits.filter(resource => resource.trait_type === 'Regions')
+    const rivers = openSeaResponse.traits.filter(resource => resource.trait_type === 'Rivers')
+
+    console.log(rivers)
+
+    const colour = [
+      {
+          value: "Wood",
+          colour: "bg-yellow-900"
+      },
+      {
+          value: "Stone",
+          colour: "bg-gray-300 text-gray-800"
+      },
+      {
+          value: "Coal",
+          colour: "bg-gray-600"
+      },
+                              {
+          value: "Copper",
+          colour: "bg-yellow-500"
+      },
+      {
+          value: "Obsidian",
+          colour: "bg-black"
+      },
+      {
+          value: "Silver",
+          colour: "bg-gray-200 text-gray-700"
+      },
+      {
+          value: "Ironwood",
+          colour: "bg-red-700"
+      },
+      {
+          value: "Cold Iron",
+          colour: "bg-red-300 text-red-700"
+      },
+      {
+          value: "Gold",
+          colour: "bg-yellow-300 text-yellow-700"
+      },
+      {
+          value: "Hartwood",
+          colour: "bg-red-300"
+      },
+      {
+          value: "Diamonds",
+          colour: "bg-purple-100 text-purple-400"
+      },
+      {
+          value: "Sapphire",
+          colour: "bg-blue-500"
+      },
+      {
+          value: "Deep Crystal",
+          colour: "bg-blue-300"
+      },
+      {
+          value: "Ruby",
+          colour: "bg-red-600"
+      },
+      {
+          value: "Ignium",
+          colour: "bg-red-500 text-yellow-200"
+      },
+      {
+          value: "Ethereal Silica",
+          colour: "bg-green-500"
+      },
+      {
+          value: "True Ice",
+          colour: "bg-white text-blue-700"
+      },
+      {
+          value: "Twilight Quartz",
+          colour: "bg-purple-700"
+      },
+      {
+          value: "Alchemical Silver",
+          colour: "bg-gray-400"
+      },
+      {
+          value: "Adamantine",
+          colour: "bg-blue-900"
+      },
+      {
+          value: "Mithral",
+          colour: "bg-blue-400"
+      },
+      {
+          value: "Dragonhide",
+          colour: "bg-pink-500"
+      }
+  ]
+    const getColour = (value) => {
+        return colour.find(c => c.value === value).colour
+    }
+
+
+    const body: string = `<body class="bg-black">
+
       <img src="${imageUrl}" />
-      <div class="welcome-container">
-          <img src="https://i.imgur.com/c4rIyMf.png" alt="logo" class="logo">
-          <div class="container">
-            <h5 class="subtitle">WELCOME TO REALMS!</h5>
-          <h1 class="title">address</h1>
+      <div class="text-white">
+          <div class="container p-10">
+            <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord! 👑</h1>
+            <h4 class="text-4xl my-2">Sold for: ${price}</h4> 
+            <div class="flex my-2 flex-wrap space-y-4 text-2xl">
+              <h4> Resources: ${ traits.value } </h4>
+              <div class="my-2 w-80">       
+              <div class="my-2">
+                  Cities: ${ cities.value } / 21
+                  <div class="bg-gray-200 bg-white w-full rounded">
+                      <div :style="'width:' + (${ cities.value } / 21) * 100 + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
+                  </div>
+              </div>        
+              <div class="my-2">
+                  Harbours: ${ harbours.value } / 35
+                  <div class="bg-gray-200 bg-white w-full rounded">
+                      <div :style="'width:' + (${ harbours.value } / 35) * 100 + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
+                  </div>
+              </div>
+              <div class="my-2">
+                  Regions: ${ regions.value } / 7
+                  <div class="bg-gray-200 w-full rounded">
+                      <div :style="'width:' + (${ regions.value } / 7) * 100 + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
+                  </div>
+              </div>        
+              <div class="my-2">
+                  Rivers: ${ rivers.value } / 60
+                  <div class="bg-gray-200  bg-white w-full rounded">
+                      <div :style="'width:' + (${ rivers.value } / 60) * 100 + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
+                  </div>
+              </div>
+              
+          </div>
+            </div>
           </div>
       </div>
     </body>`;
@@ -21,95 +160,16 @@ export default (sale: any): string => {
               <meta charset="UTF-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+              <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
               <style>
-                @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;800&display=swap');
-                * {
-                  margin: 0;
-                  padding: 0;
-                  box-sizing: border-box;
-                  overflow: hidden;
-                }
+                @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
                 body {
-                  width: 1000px;
-                  max-width: 1000px;
-                  font-family: "Poppins", Arial, Helvetica, sans-serif;
-                  color: #ffffff;
-                  overflow: hidden;
+                  font-family: 'EB Garamond', serif;
+                  width: 800px;
                 }
-                
-                .welcome-container {
-                  width: 1000px;
-                  min-width: 1000px;
-                  max-width: 1000px;
-                  height: 300px;
-                  min-height: 300px;
-                  max-height: 300px;
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: flex-start;
-                  align-items: center;
-                  padding: 50px 130px;
-                  z-index: 300;
-                }
-                .welcome-container * {
-                  z-index: 300;
-                }
-                
-                .user-avatar {
-                  height: 300px;
-                  width: auto;
-                  box-sizing: contain;
-                  position: absolute;
-                  z-index: 3;
-                }
-                .overlay {
-                  width: 1000px;
-                  min-width: 1000px;
-                  max-width: 1000px;
-                  height: 300px;
-                  min-height: 300px;
-                  max-height: 300px;
-                  background: linear-gradient(90deg, rgba(11, 11, 11, 0.25) 0px, rgba(11, 11, 11, 1) 290px);
-                  top: 0;
-                  left: 0;
-                  position: absolute;
-                  z-index: 30;
-                }
-                .logo {
-                  max-height: 200px;
-                  min-height: 200px;
-                  height: 200px;
-                  min-width: 200px;
-                  max-width: 200px;
-                  width: 200px;
-                  box-sizing: contain;
-                  margin-right: 40px;
-                }
-                
-                .container {
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                  align-items: flex-start;
-                  border-right: 2px solid #fff;
-                  width: 100%;
-                }
-                .subtitle {
-                  font-size: 26px;
-                  line-height: 26px;
-                  font-weight: 300;
-                  text-transform: uppercase;
-                  color: rgba(255, 255, 255, 0.75);
-                }
-                .title {
-                  font-size: 12px;
-                  line-height: 72px;
-                  font-weight: 800;
-                  max-width: 450px;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  text-transform: uppercase;
-                  white-space: nowrap;
+                img {
+                  width: 800px;
+                  height: 800px;
                 }
               </style>
           </head>

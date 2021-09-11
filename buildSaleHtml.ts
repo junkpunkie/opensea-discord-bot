@@ -125,25 +125,25 @@ export default (sale: any, openSeaResponse: any): string => {
             <div class="my-2">
                 Cities: ${ cities.value } / 21
                 <div class="bg-gray-200 bg-white w-full rounded">
-                    <div :style="'width:' + (${ (parseInt(cities.value)  / 21) * 100 } + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
+                    <div :style="'width:' + ${ (parseInt(cities.value)  / 21) * 100 } + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
                 </div>
             </div>        
             <div class="my-2">
                 Harbours: ${ harbours.value } / 35
                 <div class="bg-gray-200 bg-white w-full rounded">
-                    <div :style="'width:' + (${ (parseInt(harbours.value)  / 35) * 100} + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
+                    <div :style="'width:' + ${ (parseInt(harbours.value)  / 35) * 100} + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
                 </div>
             </div>
             <div class="my-2">
                 Regions: ${ regions.value } / 7
                 <div class="bg-gray-200 w-full rounded">
-                    <div :style="'width:' + (${ (parseInt(regions.value)  / 7) * 100} + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
+                    <div :style="'width:' + ${ (parseInt(regions.value)  / 7) * 100} + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
                 </div>
             </div>        
             <div class="my-2">
                 Rivers: ${ rivers.value } / 60
                 <div class="bg-gray-200  bg-white w-full rounded">
-                    <div :style="'width:' + (${ (parseInt(rivers.value) / 60) * 100} + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
+                    <div :style="'width:' + ${ (parseInt(rivers.value) / 60) * 100} + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
                 </div>
             </div>
         </div>

@@ -8,7 +8,6 @@ export default (sale: any, openSeaResponse: any): string => {
     const price = `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`
 
     const traits = openSeaResponse.traits.filter(resource => resource.trait_type === 'Resource')
-
     const cities = openSeaResponse.traits.find(resource => resource.trait_type === 'Cities')
     const harbours = openSeaResponse.traits.find(resource => resource.trait_type === 'Harbors')
     const regions = openSeaResponse.traits.find(resource => resource.trait_type === 'Regions')
@@ -111,9 +110,10 @@ export default (sale: any, openSeaResponse: any): string => {
 
     const traitDetail = (t) => {
       let html: string = ''
-      for(let i = 0; t < t.length; i++) {
-        html.concat("<span class=px-4 py-1 rounded text-sm mb-1 mr-2>" + t.value +"</span>/n")
+      for (var trait of t) {
+        html += "<span class=\""+ getColour(trait.value) + " px-6 py-2 rounded text-sm mb-1 mr-4\">" + trait.value +"</span>";
       }
+      console.log('html is')
       console.log(html)
       return html
     }
@@ -123,13 +123,12 @@ export default (sale: any, openSeaResponse: any): string => {
 
       <img src="${imageUrl}" />
       <div class="text-white">
-          <div class="container p-10">
-            <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord! 👑</h1>
-            <h4 class="text-4xl my-2">Sold for: ${price}</h4> 
+          <div class="container pt-4 pb-6 px-10">
+            <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord!</h1>
+            <h4 class="text-4xl my-2">👑 Sold for: ${price}</h4> 
             <div class="flex my-2 flex-wrap space-y-4 text-2xl">
-              <h4> Resources:</h4>
               <div class="flex flex-wrap my-4">
-                
+                ${traitDetail(traits)}
               </div>
             </div>
             <div class="my-2 text-xl">       

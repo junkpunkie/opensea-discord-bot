@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import Discord, { TextChannel, MessageAttachment } from 'discord.js';
+import Discord, { TextChannel, MessageAttachment, Intents } from 'discord.js';
 import fetch from 'node-fetch';
 import { ethers } from "ethers";
 import fs from "pn/fs"
@@ -8,7 +8,7 @@ import nodeHtmlToImage from 'node-html-to-image';
 
 const OPENSEA_SHARED_STOREFRONT_ADDRESS = '0x495f947276749Ce646f68AC8c248420045cb7b5e';
 
-const discordBot = new Discord.Client();
+const discordBot = new Discord.Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const  discordSetup = async (): Promise<TextChannel> => {
   return new Promise<TextChannel>((resolve, reject) => {
     ['DISCORD_BOT_TOKEN', 'DISCORD_CHANNEL_ID'].forEach((envVar) => {
@@ -23,11 +23,11 @@ const  discordSetup = async (): Promise<TextChannel> => {
   })
 }
 
-const buildMessage = (sale: any) => (
-  new Discord.MessageAttachment(sale, 'name.jpeg') 
+const buildImage = (image: any) => (
+  new Discord.MessageAttachment(image, 'realm.jpeg') 
 )
 
-const buildLinks = (sale: any) => (
+/*const buildLinks = (sale: any) => (
   new Discord.MessageEmbed()
   .addFields(
     { name: "Open sea link",
@@ -36,7 +36,7 @@ const buildLinks = (sale: any) => (
     { name: "See on Bibliotheca",
     value: `https://bibliotheca.com/realms/${sale.asset.token_id}`
   })
-)
+)*/
 
 async function main() {
   const channel = await discordSetup();
@@ -72,11 +72,29 @@ async function main() {
           args: ['--no-sandbox'],
         }
       })
+      await fs.writeFileSync('realm.jpeg', image);
 
-      const message = buildMessage(image);
+      const embed = new Discord.MessageEmbed()
+        .setTitle('🗺️ New Realm Sale')
+        .setImage("attachment://realm.jpeg")        
+        .addFields(
+          { name: 'Name', value: sale.asset.name },
+          { name: 'Amount', value: `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`},
+          { name: "Bibliotheca Link",
+            value: `[Click here](https://bibliothecaforloot.com/realms/${sale.asset.token_id})`,
+            inline: true
+          },
+          { name: "OpenSea Link",
+            value: `[Click here](${sale.asset.permalink})`,
+            inline: true
+          },
+        );
+      return channel.send({ embeds: [embed], files: [buildImage(image)] });
+
+     /* const message = buildMessage(image);
       const links = buildLinks(sale);
       channel.send(message)
-      return channel.send(links)
+      return channel.send(links)*/
     })
   );   
 }

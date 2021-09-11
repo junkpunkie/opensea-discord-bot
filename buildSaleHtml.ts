@@ -2,17 +2,17 @@ import { ethers } from "ethers";
 export default (sale: any, openSeaResponse: any): string => {
     const imageUrl = sale.asset.image_url
     const name = sale.asset.name
-    const id = sale.token_id
+    const id = sale.asset.token_id
     const buyer = sale?.winner_account?.address
     const seller = sale?.seller?.address
     const price = `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`
 
     const traits = openSeaResponse.traits.filter(resource => resource.trait_type === 'Resource')
 
-    const cities = openSeaResponse.traits.filter(resource => resource.trait_type === 'Cities')
-    const harbours = openSeaResponse.traits.filter(resource => resource.trait_type === 'Harbors')
-    const regions = openSeaResponse.traits.filter(resource => resource.trait_type === 'Regions')
-    const rivers = openSeaResponse.traits.filter(resource => resource.trait_type === 'Rivers')
+    const cities = openSeaResponse.traits.find(resource => resource.trait_type === 'Cities')
+    const harbours = openSeaResponse.traits.find(resource => resource.trait_type === 'Harbors')
+    const regions = openSeaResponse.traits.find(resource => resource.trait_type === 'Regions')
+    const rivers = openSeaResponse.traits.find(resource => resource.trait_type === 'Rivers')
 
     console.log(rivers)
 
@@ -120,34 +120,33 @@ export default (sale: any, openSeaResponse: any): string => {
             <h4 class="text-4xl my-2">Sold for: ${price}</h4> 
             <div class="flex my-2 flex-wrap space-y-4 text-2xl">
               <h4> Resources: ${ traits.value } </h4>
-              <div class="my-2 w-80">       
-              <div class="my-2">
-                  Cities: ${ cities.value } / 21
-                  <div class="bg-gray-200 bg-white w-full rounded">
-                      <div :style="'width:' + (${ cities.value } / 21) * 100 + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
-                  </div>
-              </div>        
-              <div class="my-2">
-                  Harbours: ${ harbours.value } / 35
-                  <div class="bg-gray-200 bg-white w-full rounded">
-                      <div :style="'width:' + (${ harbours.value } / 35) * 100 + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
-                  </div>
-              </div>
-              <div class="my-2">
-                  Regions: ${ regions.value } / 7
-                  <div class="bg-gray-200 w-full rounded">
-                      <div :style="'width:' + (${ regions.value } / 7) * 100 + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
-                  </div>
-              </div>        
-              <div class="my-2">
-                  Rivers: ${ rivers.value } / 60
-                  <div class="bg-gray-200  bg-white w-full rounded">
-                      <div :style="'width:' + (${ rivers.value } / 60) * 100 + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
-                  </div>
-              </div>
-              
-          </div>
             </div>
+            <div class="my-2 text-xl">       
+            <div class="my-2">
+                Cities: ${ cities.value } / 21
+                <div class="bg-gray-200 bg-white w-full rounded">
+                    <div :style="'width:' + (${ (parseInt(cities.value)  / 21) * 100 } + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
+                </div>
+            </div>        
+            <div class="my-2">
+                Harbours: ${ harbours.value } / 35
+                <div class="bg-gray-200 bg-white w-full rounded">
+                    <div :style="'width:' + (${ (parseInt(harbours.value)  / 35) * 100} + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
+                </div>
+            </div>
+            <div class="my-2">
+                Regions: ${ regions.value } / 7
+                <div class="bg-gray-200 w-full rounded">
+                    <div :style="'width:' + (${ (parseInt(regions.value)  / 7) * 100} + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
+                </div>
+            </div>        
+            <div class="my-2">
+                Rivers: ${ rivers.value } / 60
+                <div class="bg-gray-200  bg-white w-full rounded">
+                    <div :style="'width:' + (${ (parseInt(rivers.value) / 60) * 100} + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
+                </div>
+            </div>
+        </div>
           </div>
       </div>
     </body>`;

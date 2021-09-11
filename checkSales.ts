@@ -1,7 +1,10 @@
 import 'dotenv/config';
-import Discord, { TextChannel } from 'discord.js';
+import Discord, { TextChannel, MessageAttachment } from 'discord.js';
 import fetch from 'node-fetch';
 import { ethers } from "ethers";
+import fs from "pn/fs"
+import buildSaleHTML from "./buildSaleHTML";
+import nodeHtmlToImage from 'node-html-to-image';
 
 const OPENSEA_SHARED_STOREFRONT_ADDRESS = '0x495f947276749Ce646f68AC8c248420045cb7b5e';
 
@@ -20,6 +23,51 @@ const  discordSetup = async (): Promise<TextChannel> => {
   })
 }
 
+const _htmlTemplate = (imageUrl) => { `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <style>
+        body {
+          font-family: "Poppins", Arial, Helvetica, sans-serif;
+          background: rgb(22, 22, 22);
+          color: #fff;
+          max-width: 300px;
+        }
+
+        .app {
+          max-width: 300px;
+          padding: 20px;
+          display: flex;
+          flex-direction: row;
+          border-top: 3px solid rgb(16, 180, 209);
+          background: rgb(31, 31, 31);
+          align-items: center;
+        }
+
+        img {
+          width: 50px;
+          height: 50px;
+          margin-right: 20px;
+          border-radius: 50%;
+          border: 1px solid #fff;
+          padding: 5px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="app">
+        <img src="https://avatars.dicebear.com/4.5/api/avataaars/${name}.svg" />
+
+        <h4>Welcome ${name}</h4>
+      </div>
+    </body>
+  </html>
+  `
+  }
+
 const buildMessage = (sale: any) => (
   new Discord.MessageEmbed()
 	.setColor('#0099ff')
@@ -33,7 +81,6 @@ const buildMessage = (sale: any) => (
 		{ name: 'Buyer', value: sale?.winner_account?.address, },
 		{ name: 'Seller', value: sale?.seller?.address,  },
 	)
-  .setImage(sale.asset.image_url)
 	.setTimestamp(Date.parse(`${sale?.created_date}Z`))
 	.setFooter('Sold on OpenSea', 'https://files.readme.io/566c72b-opensea-logomark-full-colored.png')
 )
@@ -60,6 +107,16 @@ async function main() {
     
   return await Promise.all(
     openSeaResponse?.asset_events?.reverse().map(async (sale: any) => {
+      const image = await nodeHtmlToImage({
+        html: _htmlTemplate(sale.asset.image_url),
+        quality: 100,
+        type: 'jpeg',
+        puppeteerArgs: {
+          args: ['--no-sandbox'],
+        },
+        encoding: 'buffer',
+      }
+
       const message = buildMessage(sale);
       return channel.send(message)
     })

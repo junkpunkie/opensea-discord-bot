@@ -24,7 +24,7 @@ const  discordSetup = async (): Promise<TextChannel> => {
 }
 
 const buildMessage = (sale: any) => (
-  new Discord.MessageAttachment(sale, 'name.jpeg')
+  new Discord.MessageAttachment(sale, 'name.jpeg') 
 )
 
 async function main() {

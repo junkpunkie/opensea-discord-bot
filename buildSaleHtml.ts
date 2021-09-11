@@ -110,6 +110,14 @@ export default (sale: any, openSeaResponse: any): string => {
         return colour.find(c => c.value === value).colour
     }
 
+    const traitDetail = (t) => {
+      let html: string = ''
+      for(let i = 0; t < t.length; i++) {
+        html += "<span class="+ getColour(t.value) + "px-4 py-1 rounded text-sm mb-1 mr-2>" + t.value +"</span>";
+      }
+      return html
+    }
+
 
     const body: string = `<body class="bg-black">
 
@@ -120,30 +128,33 @@ export default (sale: any, openSeaResponse: any): string => {
             <h4 class="text-4xl my-2">Sold for: ${price}</h4> 
             <div class="flex my-2 flex-wrap space-y-4 text-2xl">
               <h4> Resources: ${ traits.value } </h4>
+              <div class="flex flex-wrap my-4">
+                ${traitDetail(traits)}
+              </div>
             </div>
             <div class="my-2 text-xl">       
             <div class="my-2">
                 Cities: ${ cities.value } / 21
                 <div class="bg-gray-200 bg-white w-full rounded">
-                    <div :style="'width:' + ${ (parseInt(cities.value)  / 21) * 100 } + '%'"  class="rounded px-4 py-2 bg-red-500"></div> 
+                    <div style="width: ${ (parseInt(cities.value)  / 21) * 100 + '%'}"  class="rounded px-4 py-2 bg-red-500"></div> 
                 </div>
             </div>        
             <div class="my-2">
                 Harbours: ${ harbours.value } / 35
                 <div class="bg-gray-200 bg-white w-full rounded">
-                    <div :style="'width:' + ${ (parseInt(harbours.value)  / 35) * 100} + '%'"  class="rounded px-4 py-2 bg-gray-500"></div> 
+                    <div style="width: ${ (parseInt(harbours.value)  / 35) * 100 + '%'}"  class="rounded px-4 py-2 bg-gray-500"></div> 
                 </div>
             </div>
             <div class="my-2">
                 Regions: ${ regions.value } / 7
                 <div class="bg-gray-200 w-full rounded">
-                    <div :style="'width:' + ${ (parseInt(regions.value)  / 7) * 100} + '%'"  class="rounded px-4 py-2 bg-yellow-300"></div> 
+                    <div style="width: ${ (parseInt(regions.value)  / 7) * 100 + '%'}"  class="rounded px-4 py-2 bg-yellow-300"></div> 
                 </div>
             </div>        
             <div class="my-2">
                 Rivers: ${ rivers.value } / 60
                 <div class="bg-gray-200  bg-white w-full rounded">
-                    <div :style="'width:' + ${ (parseInt(rivers.value) / 60) * 100} + '%'"  class="rounded px-4 py-2 bg-blue-300"></div> 
+                    <div style="width: ${ (parseInt(rivers.value) / 60) * 100 + '%' }"  class="rounded px-4 py-2 bg-blue-300"></div> 
                 </div>
             </div>
         </div>

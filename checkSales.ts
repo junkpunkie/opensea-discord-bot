@@ -69,7 +69,7 @@ async function main() {
         quality: 100,
         type: 'jpeg',
         puppeteerArgs: {
-          args: ['--no-sandbox'],
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
         }
       })
       await fs.writeFileSync('realm.jpeg', image);

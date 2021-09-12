@@ -113,8 +113,8 @@ export default (sale: any, openSeaResponse: any): string => {
       for (var trait of t) {
         html += "<span class=\""+ getColour(trait.value) + " px-6 py-2 rounded text-sm mb-1 mr-4\">" + trait.value +"</span>";
       }
-      console.log('html is')
-      console.log(html)
+      /*console.log('html is')
+      console.log(html)*/
       return html
     }
 

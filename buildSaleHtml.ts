@@ -1,4 +1,7 @@
 import { ethers } from "ethers";
+import useRarity from './useRarity';
+const { checkRealmRarity } = useRarity();
+
 export default (sale: any, openSeaResponse: any): string => {
     const imageUrl = sale.asset.image_url
     const name = sale.asset.name
@@ -12,7 +15,25 @@ export default (sale: any, openSeaResponse: any): string => {
     const harbours = openSeaResponse.traits.find(resource => resource.trait_type === 'Harbors')
     const regions = openSeaResponse.traits.find(resource => resource.trait_type === 'Regions')
     const rivers = openSeaResponse.traits.find(resource => resource.trait_type === 'Rivers')
+    const wonder = openSeaResponse.traits.find(resource => resource.trait_type === 'Wonder (translated)')
 
+    const getRarityColour = (rarity) => {
+        if (rarity > 8000) {
+          return 'bg-gradient-to-r from-purple-300 via-pink-400 to-red-400'
+        } else if (rarity > 200) {
+          return 'bg-red-800 text-white'
+        } else if (rarity > 100) {
+          return 'bg-red-600 text-white'
+        } else if (rarity > 50) {
+          return 'bg-red-400 text-white'
+        } else if (rarity > 25) {
+          return 'bg-red-200 text-white text-gray-700'
+        } else if (rarity > 10) {
+          return 'bg-red-50 text-gray-700'
+        } else {
+          return 'text-black'
+        }
+      }
 
     const colour = [
       {
@@ -113,15 +134,28 @@ export default (sale: any, openSeaResponse: any): string => {
       for (var trait of t) {
         html += "<span class=\""+ getColour(trait.value) + " px-6 py-2 rounded text-sm mb-1 mr-4\">" + trait.value +"</span>";
       }
-      /*console.log('html is')
-      console.log(html)*/
       return html
     }
 
+    const rarity = checkRealmRarity(openSeaResponse.traits).toFixed(2)
+    const rarityColour = getRarityColour(rarity)
 
     const body: string = `<body class="bg-black">
 
-      <img src="${imageUrl}" />
+      <div class="relative">
+        <span class="
+            absolute
+            bg-white
+            rounded px-2 py-1
+            shadow-2xl
+            top-10
+            right-10
+            ${rarityColour}
+        ">
+            Rarity: ${rarity}
+        </span>
+        <img src="${imageUrl}" />
+      </div>
       <div class="text-white">
           <div class="container pt-4 pb-6 px-10">
             <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord!</h1>
@@ -156,6 +190,11 @@ export default (sale: any, openSeaResponse: any): string => {
                     <div style="width: ${ (parseInt(rivers.value) / 60) * 100 + '%' }"  class="rounded px-4 py-2 bg-blue-300"></div> 
                 </div>
             </div>
+            ${
+                wonder ? 
+                `<div class="my-2">Wonder: ${ wonder.value }</div>` :
+                ''
+            }
         </div>
           </div>
       </div>

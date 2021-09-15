@@ -60,7 +60,7 @@ async function main() {
   
   const params = new URLSearchParams({
     offset: '0',
-    event_type: 'successful',
+    event_type: 'created',
     only_opensea: 'false',
     occurred_after: hoursAgo.toString(), 
     collection_slug: process.env.COLLECTION_SLUG!,

@@ -76,13 +76,15 @@ async function main() {
   const assets = openSeaResponse?.asset_events.reverse()
 
   const sendEmbed = async(sale) => {
+      
       let messageTitle
+      let realmPrice
       if (sale.event_type === 'created') {
         messageTitle = '🗺️ New Realm Listing'
-        params.append('event_type', 'created')
+        realmPrice = sale.starting_price
       } else if (sale.event_type === 'successful') {
         messageTitle = '🗺️ New Realm Sale'
-        params.append('event_type', 'successful')
+        realmPrice = sale.total_price
       } else {
         return
       }
@@ -103,7 +105,7 @@ async function main() {
         .setImage("attachment://realm.jpeg")        
         .addFields(
           { name: 'Name', value: sale.asset.name },
-          { name: 'Amount', value: `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`},
+          { name: 'Amount', value: `${ethers.utils.formatEther(realmPrice || '0')}${ethers.constants.EtherSymbol}`},
           { name: "Bibliotheca Link",
             value: `[Click here](https://bibliothecaforloot.com/realms/${sale.asset.token_id})`,
             inline: true

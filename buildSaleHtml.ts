@@ -9,7 +9,14 @@ export default (sale: any, openSeaResponse: any): string => {
     const id = sale.asset.token_id
     const buyer = sale?.winner_account?.address
     const seller = sale?.seller?.address
-    const price = `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`
+    let price
+    if (openSeaEventType === 'successful') {
+        price = `${ethers.utils.formatEther(sale.total_price || '0')}${ethers.constants.EtherSymbol}`
+    } else if (openSeaEventType === 'created') {
+        price = `${ethers.utils.formatEther(sale.starting_price || '0')}${ethers.constants.EtherSymbol}`
+    } else {
+        return
+    }
 
     const traits = openSeaResponse.traits.filter(resource => resource.trait_type === 'Resource')
     const cities = openSeaResponse.traits.find(resource => resource.trait_type === 'Cities')

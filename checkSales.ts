@@ -60,7 +60,6 @@ async function main() {
   
   const params = new URLSearchParams({
     offset: '0',
-    event_type: 'created',
     only_opensea: 'false',
     occurred_after: hoursAgo.toString(), 
     collection_slug: process.env.COLLECTION_SLUG!,
@@ -72,10 +71,21 @@ async function main() {
 
   const openSeaResponse = await fetch(
     "https://api.opensea.io/api/v1/events?" + params).then((resp) => resp.json());
+
     
   const assets = openSeaResponse?.asset_events.reverse()
 
   const sendEmbed = async(sale) => {
+      let messageTitle
+      if (sale.event_type === 'created') {
+        messageTitle = '🗺️ New Realm Listing'
+        params.append('event_type', 'created')
+      } else if (sale.event_type === 'successful') {
+        messageTitle = '🗺️ New Realm Sale'
+        params.append('event_type', 'successful')
+      } else {
+        return
+      }
       console.log('sending ' + sale.asset.name)
       const openSeaResponse = await fetch("https://api.opensea.io/api/v1/asset/0x7afe30cb3e53dba6801aa0ea647a0ecea7cbe18d/" + sale.asset.token_id)
       const imageJson = await openSeaResponse.json()
@@ -89,7 +99,7 @@ async function main() {
       })
       const imagewrite = fs.writeFileSync('realm.jpeg', image);
       const embed = new Discord.MessageEmbed()
-        .setTitle('🗺️ New Realm Sale')
+        .setTitle(messageTitle)
         .setImage("attachment://realm.jpeg")        
         .addFields(
           { name: 'Name', value: sale.asset.name },

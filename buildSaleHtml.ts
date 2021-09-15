@@ -3,6 +3,7 @@ import useRarity from './useRarity';
 const { checkRealmRarity } = useRarity();
 
 export default (sale: any, openSeaResponse: any): string => {
+    const openSeaEventType = sale.event_type
     const imageUrl = sale.asset.image_url
     const name = sale.asset.name
     const id = sale.asset.token_id
@@ -146,10 +147,13 @@ export default (sale: any, openSeaResponse: any): string => {
         <span class="
             absolute
             bg-white
-            rounded px-2 py-1
+            rounded
+            px-2
+            py-1
             shadow-2xl
             top-10
             right-10
+            text-4xl
             ${rarityColour}
         ">
             Rarity: ${rarity}
@@ -158,8 +162,16 @@ export default (sale: any, openSeaResponse: any): string => {
       </div>
       <div class="text-white">
           <div class="container pt-4 pb-6 px-10">
-            <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord!</h1>
-            <h4 class="text-4xl my-2">👑 Sold for: ${price}</h4> 
+            ${openSeaEventType === 'successful' ?
+            `
+                <h1 class="text-5xl mb-4">#${id} - ${name} has a new Lord!</h1>
+                <h4 class="text-4xl my-2">👑 Sold for: ${price}</h4> 
+            ` : 
+            `
+                <h1 class="text-5xl mb-4">#${id} - ${name} is for sale!</h1>
+                <h4 class="text-4xl my-2">👑 Price: ${price}</h4> 
+            `}
+
             <div class="flex my-2 flex-wrap space-y-4 text-2xl">
               <div class="flex flex-wrap my-4">
                 ${traitDetail(traits)}
